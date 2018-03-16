@@ -6,6 +6,7 @@ extern crate rocket_contrib;
 extern crate serde_json;
 #[macro_use] extern crate serde_derive;
 
+use rocket::response::status;
 use rocket_contrib::Json;
 
 #[derive(Deserialize)]
@@ -31,12 +32,13 @@ struct CspReport {
 }
 
 #[post("/", format = "application/json", data = "<json_body>")]
-fn process_csp_report(json_body: Json<JsonBody>) -> String {
+fn process_csp_report(json_body: Json<JsonBody>) -> status::NoContent {
     let csp_report = &json_body.csp_report;
     let json_report = serde_json::to_string(&csp_report)
         .expect("Error: Couldn't serialize the CSP report.");
-    "Sucessfully received a CSP report:\n".to_string()
-    + &json_report
+    println!("Sucessfully received a CSP report:");
+    println!("{}", &json_report);
+    status::NoContent
 }
 
 fn main() {
