@@ -5,21 +5,29 @@ extern crate rocket;
 #[macro_use] extern crate serde_derive;
 
 #[derive(Deserialize)]
+#[serde(rename_all = "kebab-case")]
 // Temporarily disable these warnings (TODO)
 #[allow(dead_code)]
-#[allow(non_snake_case)]
+struct JsonBody {
+    csp_report: CspReport
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "kebab-case")]
+// Temporarily disable these warnings (TODO)
+#[allow(dead_code)]
 struct CspReport {
-    documentURI: String,
+    document_uri: String,
     referrer: String,
-    blockedURI: String,
-    violatedDirective: String,
-    effectiveDirective: String,
-    originalPolicy: String,
+    blocked_uri: String,
+    effective_directive: String,
+    violated_directive: String,
+    original_policy: String,
     disposition: String,
-    sourceFile: String,
-    statusCode: u16,
-    lineNumber: i32,
-    columnNumber: i32
+    status_code: u16,
+    source_file: Option<String>,
+    line_number: Option<i32>,
+    column_number: Option<i32>
 }
 
 #[get("/")]
