@@ -2,20 +2,20 @@
 #![plugin(rocket_codegen)]
 
 extern crate rocket;
+extern crate rocket_contrib;
+extern crate serde_json;
 #[macro_use] extern crate serde_derive;
+
+use rocket_contrib::Json;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "kebab-case")]
-// Temporarily disable these warnings (TODO)
-#[allow(dead_code)]
 struct JsonBody {
     csp_report: CspReport
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize,Deserialize)]
 #[serde(rename_all = "kebab-case")]
-// Temporarily disable these warnings (TODO)
-#[allow(dead_code)]
 struct CspReport {
     document_uri: String,
     referrer: String,
@@ -30,11 +30,15 @@ struct CspReport {
     column_number: Option<i32>
 }
 
-#[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
+#[post("/", format = "application/json", data = "<json_body>")]
+fn process_csp_report(json_body: Json<JsonBody>) -> String {
+    let csp_report = &json_body.csp_report;
+    let json_report = serde_json::to_string(&csp_report)
+        .expect("Error: Couldn't serialize the CSP report.");
+    "Sucessfully received a CSP report:\n".to_string()
+    + &json_report
 }
 
 fn main() {
-    rocket::ignite().mount("/", routes![index]).launch();
+    rocket::ignite().mount("/", routes![process_csp_report]).launch();
 }
