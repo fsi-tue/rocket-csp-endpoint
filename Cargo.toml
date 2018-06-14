@@ -2,6 +2,10 @@
 name = "rocket-csp-endpoint"
 version = "0.1.0"
 authors = ["Michael Weiss <dev.primeos@gmail.com>"]
+license = "MIT"
+publish = false
+description = "Content Security Policy endpoint for the FSI"
+repository = "https://github.com/fsi-tue/rocket-csp-endpoint"
 
 [dependencies]
 time = "0.1"
